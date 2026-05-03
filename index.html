@@ -15,78 +15,62 @@
       align-items: center;
       height: 100vh;
       color: white;
-      background: #1a1a1a url('image_1.png') no-repeat center center;
+      background: #1a1a1a url('IMG_2343.jpg') no-repeat center center;
       background-size: cover;
     }
 
     .container {
       max-width: 420px;
+      position: relative;
+      z-index: 2;
     }
 
-    .header {
-      margin-bottom: 25px;
+    /* Dark overlay to make text pop against the background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
     }
 
-    .tesla-taxi {
-      font-size: 2.5rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-    }
-
+    .header { margin-bottom: 25px; }
+    .tesla-taxi { font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+    
     .logo {
       display: inline-block;
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       margin-bottom: 10px;
-      background: url('image_0.png') no-repeat center center;
+      background: url('IMG_2340.png') no-repeat center center;
       background-size: contain;
     }
 
-    .tesla-goapp {
-      color: #2ecc71;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .aleksandar {
-      color: #2ecc71;
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 10px;
-    }
+    .tesla-goapp { color: #2ecc71; font-size: 1.8rem; font-weight: bold; }
+    .aleksandar { color: #2ecc71; font-size: 1.3rem; font-weight: bold; margin-top: 5px; }
 
     .status {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       padding: 20px;
       border-radius: 12px;
       margin-bottom: 15px;
     }
 
-    .available {
-      background-color: #2ecc71;
-    }
-
-    .not-available {
-      background-color: #e74c3c;
-    }
+    .available { background-color: #2ecc71; }
+    .not-available { background-color: #e74c3c; }
 
     .shift {
       margin-top: 15px;
       font-size: 16px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       color: #333;
       padding: 15px;
       border-radius: 10px;
       line-height: 1.5;
     }
 
-    .contact {
-      margin-top: 25px;
-    }
-
+    .contact { margin-top: 25px; }
     button {
       padding: 14px 20px;
       margin: 8px;
@@ -114,10 +98,7 @@
     <div class="aleksandar">ALEKSANDAR</div>
   </div>
 
-  <!-- Status in English and Serbian -->
   <div id="status" class="status"></div>
-  
-  <!-- Shift Info in English and Serbian -->
   <div id="shift-info" class="shift"></div>
 
   <div class="contact">
@@ -130,24 +111,37 @@
 <script>
 function getWeekType() {
   const now = new Date();
-  const referenceDate = new Date(2026, 4, 3);
+  /* 
+     Setting May 4th, 2026 (Monday) as the start of the "Morning Week" cycle.
+     Since this week (ending May 3) is Afternoon, the new week starting tomorrow (May 4) 
+     will be the Morning shift week.
+  */
+  const referenceDate = new Date(2026, 4, 4); 
   const diffDays = Math.floor((now - referenceDate) / (1000 * 60 * 60 * 24));
+  
+  // If we are still in "today" (May 3rd), handle the transition
+  if (diffDays < 0) return "afternoon";
+
   const weekNumber = Math.floor(diffDays / 7);
-  return weekNumber % 2 === 0 ? "afternoon" : "morning";
+  // Even weeks (0, 2, 4...) = Morning Shift
+  // Odd weeks (1, 3, 5...) = Afternoon Shift
+  return weekNumber % 2 === 0 ? "morning" : "afternoon";
 }
 
 function isAvailable() {
   const now = new Date();
-  const day = now.getDay();
+  const day = now.getDay(); // 0=Sun, 1=Mon, 2=Tue...
+
+  // Monday is always OFF
   if (day === 1) return false;
 
   const weekType = getWeekType();
-  const hours = now.getHours() + now.getMinutes() / 60;
+  const hours = now.getHours();
 
   if (weekType === "morning") {
-    return hours >= 7 && hours <= 15;
+    return hours >= 7 && hours < 15;
   } else {
-    return hours >= 15 && hours <= 23;
+    return hours >= 15 && hours < 23;
   }
 }
 
@@ -163,7 +157,6 @@ if (isAvailable()) {
   statusDiv.innerHTML = "❌ NOT AVAILABLE<br>❌ NEDOSTUPAN";
 }
 
-// English and Serbian shift labels
 const shiftNameEN = weekType === "morning" ? "Morning Shift" : "Afternoon Shift";
 const shiftNameSRB = weekType === "morning" ? "Prva Smjena" : "Druga Smjena";
 const timeRange = weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00";
