@@ -3,50 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taxi Podgorica - Availability</title>
+  <title>Tesla Taxi - Aleksandar</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       color: white;
+      /* Background setup using the uploaded logo */
+      background: #0b1410 url('input_file_1.png') no-repeat center center;
+      background-size: contain;
+      background-blend-mode: overlay;
+    }
+
+    .overlay-color {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.85;
     }
 
     .container {
       max-width: 420px;
+      padding: 20px;
+      z-index: 1;
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 5px;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+      opacity: 0.9;
     }
 
     .status {
-      font-size: 36px;
+      font-size: 24px;
       font-weight: bold;
-      padding: 25px;
+      padding: 20px;
       border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 15px;
     }
 
-    .available {
-      background-color: #2ecc71;
-    }
-
-    .not-available {
-      background-color: #e74c3c;
-    }
+    .available { background-color: #2ecc71; }
+    .not-available { background-color: #e74c3c; }
 
     .shift {
-      margin-top: 20px;
-      font-size: 18px;
-      background: white;
-      color: black;
+      margin-top: 15px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
       padding: 15px;
       border-radius: 10px;
+      line-height: 1.5;
     }
 
     .contact {
@@ -55,13 +78,17 @@
 
     button {
       padding: 14px 20px;
-      margin: 6px;
+      margin: 8px;
       font-size: 16px;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
+      border-radius: 50px;
       cursor: pointer;
-      width: 200px;
+      width: 240px;
+      transition: transform 0.2s;
     }
+
+    button:active { transform: scale(0.98); }
 
     .phone { background: #007bff; color: white; }
     .whatsapp { background: #25D366; color: white; }
@@ -69,16 +96,21 @@
   </style>
 </head>
 
-<body id="body">
+<body>
+<div id="overlay" class="overlay-color"></div>
 
 <div class="container">
-  <h1>🚕 Taxi Podgorica</h1>
+  <h1>Tesla Taxi</h1>
+  <div class="subtitle">Aleksandar</div>
 
+  <!-- Status in English and Serbian -->
   <div id="status" class="status"></div>
+  
+  <!-- Shift Info in English and Serbian -->
   <div id="shift-info" class="shift"></div>
 
   <div class="contact">
-    <button class="phone" onclick="window.location.href='tel:+38268048865'">📞 Call</button><br>
+    <button class="phone" onclick="window.location.href='tel:+38268048865'">📞 Call / Pozovi</button><br>
     <button class="whatsapp" onclick="window.location.href='https://wa.me/38268048865'">WhatsApp</button>
     <button class="viber" onclick="window.location.href='viber://chat?number=%2B38268048865'">Viber</button>
   </div>
@@ -87,7 +119,8 @@
 <script>
 function getWeekType() {
   const now = new Date();
-  const referenceDate = new Date(2026, 4, 3);
+  // Reference date aligned with your schedule logic
+  const referenceDate = new Date(2026, 4, 3); 
   const diffDays = Math.floor((now - referenceDate) / (1000 * 60 * 60 * 24));
   const weekNumber = Math.floor(diffDays / 7);
   return weekNumber % 2 === 0 ? "afternoon" : "morning";
@@ -95,7 +128,9 @@ function getWeekType() {
 
 function isAvailable() {
   const now = new Date();
-  const day = now.getDay();
+  const day = now.getDay(); // 0 is Sunday, 1 is Monday
+  
+  // Monday: OFF
   if (day === 1) return false;
 
   const weekType = getWeekType();
@@ -110,24 +145,28 @@ function isAvailable() {
 
 const statusDiv = document.getElementById('status');
 const shiftDiv = document.getElementById('shift-info');
-const body = document.getElementById('body');
-
+const overlay = document.getElementById('overlay');
 const weekType = getWeekType();
 
 if (isAvailable()) {
   statusDiv.className = "status available";
-  statusDiv.textContent = "✅ AVAILABLE NOW";
-  body.style.backgroundColor = "#2ecc71";
+  statusDiv.innerHTML = "✅ AVAILABLE NOW<br>✅ DOSTUPAN";
+  overlay.style.backgroundColor = "#2ecc71";
 } else {
   statusDiv.className = "status not-available";
-  statusDiv.textContent = "❌ NOT AVAILABLE";
-  body.style.backgroundColor = "#e74c3c";
+  statusDiv.innerHTML = "❌ NOT AVAILABLE<br>❌ NEDOSTUPAN";
+  overlay.style.backgroundColor = "#e74c3c";
 }
 
+// English and Serbian shift labels
+const shiftNameEN = weekType === "morning" ? "Morning Shift" : "Afternoon Shift";
+const shiftNameSRB = weekType === "morning" ? "Prva Smjena" : "Druga Smjena";
+const timeRange = weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00";
+
 shiftDiv.innerHTML = `
-<strong>${weekType === "morning" ? "Morning Shift" : "Afternoon Shift"}</strong><br>
-Monday: OFF<br>
-Tue–Sun: ${weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00"}
+  <strong>${shiftNameEN} / ${shiftNameSRB}</strong><br>
+  Mon / Pon: OFF<br>
+  Tue–Sun / Uto–Ned: ${timeRange}
 `;
 </script>
 
