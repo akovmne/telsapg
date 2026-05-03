@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxi Podgorica - Availability</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .container {
+      max-width: 420px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .status {
+      font-size: 36px;
+      font-weight: bold;
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    .available {
+      background-color: #2ecc71;
+    }
+
+    .not-available {
+      background-color: #e74c3c;
+    }
+
+    .shift {
+      margin-top: 20px;
+      font-size: 18px;
+      background: white;
+      color: black;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .contact {
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 14px 20px;
+      margin: 6px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 200px;
+    }
+
+    .phone { background: #007bff; color: white; }
+    .whatsapp { background: #25D366; color: white; }
+    .viber { background: #7360F2; color: white; }
+  </style>
+</head>
+
+<body id="body">
+
+<div class="container">
+  <h1>🚕 Taxi Podgorica</h1>
+
+  <div id="status" class="status"></div>
+  <div id="shift-info" class="shift"></div>
+
+  <div class="contact">
+    <button class="phone" onclick="window.location.href='tel:+38268048865'">📞 Call</button><br>
+    <button class="whatsapp" onclick="window.location.href='https://wa.me/38268048865'">WhatsApp</button>
+    <button class="viber" onclick="window.location.href='viber://chat?number=%2B38268048865'">Viber</button>
+  </div>
+</div>
+
+<script>
+function getWeekType() {
+  const now = new Date();
+  const referenceDate = new Date(2026, 4, 3);
+  const diffDays = Math.floor((now - referenceDate) / (1000 * 60 * 60 * 24));
+  const weekNumber = Math.floor(diffDays / 7);
+  return weekNumber % 2 === 0 ? "afternoon" : "morning";
+}
+
+function isAvailable() {
+  const now = new Date();
+  const day = now.getDay();
+  if (day === 1) return false;
+
+  const weekType = getWeekType();
+  const hours = now.getHours() + now.getMinutes() / 60;
+
+  if (weekType === "morning") {
+    return hours >= 7 && hours <= 15;
+  } else {
+    return hours >= 15 && hours <= 23;
+  }
+}
+
+const statusDiv = document.getElementById('status');
+const shiftDiv = document.getElementById('shift-info');
+const body = document.getElementById('body');
+
+const weekType = getWeekType();
+
+if (isAvailable()) {
+  statusDiv.className = "status available";
+  statusDiv.textContent = "✅ AVAILABLE NOW";
+  body.style.backgroundColor = "#2ecc71";
+} else {
+  statusDiv.className = "status not-available";
+  statusDiv.textContent = "❌ NOT AVAILABLE";
+  body.style.backgroundColor = "#e74c3c";
+}
+
+shiftDiv.innerHTML = `
+<strong>${weekType === "morning" ? "Morning Shift" : "Afternoon Shift"}</strong><br>
+Monday: OFF<br>
+Tue–Sun: ${weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00"}
+`;
+</script>
+
+</body>
+</html>
