@@ -8,61 +8,70 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       color: white;
-      /* Using IMG_2340.png as the main background */
-      background: #000 url('IMG_2340.png') no-repeat center center;
+      background: #1a1a1a url('image_1.png') no-repeat center center;
       background-size: cover;
-    }
-
-    /* Dark semi-transparent layer so the text is readable over the photo */
-    .main-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 1;
     }
 
     .container {
       max-width: 420px;
-      padding: 20px;
-      z-index: 2; /* Sits above the dark overlay */
-      position: relative;
     }
 
-    h1 {
-      margin-bottom: 5px;
+    .header {
+      margin-bottom: 25px;
+    }
+
+    .tesla-taxi {
       font-size: 2.5rem;
+      font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 2px;
+      margin-bottom: 10px;
     }
 
-    .subtitle {
+    .logo {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+      background: url('image_0.png') no-repeat center center;
+      background-size: contain;
+    }
+
+    .tesla-goapp {
+      color: #2ecc71;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .aleksandar {
+      color: #2ecc71;
       font-size: 1.2rem;
-      margin-bottom: 25px;
-      opacity: 0.9;
+      font-weight: bold;
+      margin-top: 10px;
     }
 
     .status {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
       padding: 20px;
       border-radius: 12px;
       margin-bottom: 15px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
-    /* Status colors restricted to the box only */
-    .available { background-color: #2ecc71; border: 2px solid #27ae60; }
-    .not-available { background-color: #e74c3c; border: 2px solid #c0392b; }
+    .available {
+      background-color: #2ecc71;
+    }
+
+    .not-available {
+      background-color: #e74c3c;
+    }
 
     .shift {
       margin-top: 15px;
@@ -96,13 +105,19 @@
 </head>
 
 <body>
-<div class="main-overlay"></div>
 
 <div class="container">
-  <h1>Tesla Taxi</h1>
-  <div class="subtitle">Aleksandar</div>
+  <div class="header">
+    <div class="tesla-taxi">Tesla Taxi</div>
+    <div class="logo"></div>
+    <div class="tesla-goapp">TeslaGoApp</div>
+    <div class="aleksandar">ALEKSANDAR</div>
+  </div>
 
+  <!-- Status in English and Serbian -->
   <div id="status" class="status"></div>
+  
+  <!-- Shift Info in English and Serbian -->
   <div id="shift-info" class="shift"></div>
 
   <div class="contact">
@@ -115,7 +130,7 @@
 <script>
 function getWeekType() {
   const now = new Date();
-  const referenceDate = new Date(2026, 4, 3); 
+  const referenceDate = new Date(2026, 4, 3);
   const diffDays = Math.floor((now - referenceDate) / (1000 * 60 * 60 * 24));
   const weekNumber = Math.floor(diffDays / 7);
   return weekNumber % 2 === 0 ? "afternoon" : "morning";
@@ -148,6 +163,7 @@ if (isAvailable()) {
   statusDiv.innerHTML = "❌ NOT AVAILABLE<br>❌ NEDOSTUPAN";
 }
 
+// English and Serbian shift labels
 const shiftNameEN = weekType === "morning" ? "Morning Shift" : "Afternoon Shift";
 const shiftNameSRB = weekType === "morning" ? "Prva Smjena" : "Druga Smjena";
 const timeRange = weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00";
