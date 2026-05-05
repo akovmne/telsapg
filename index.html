@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesla Taxi - Aleksandar</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      background: #1a1a1a url('IMG_2343.jpg') no-repeat center center;
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 420px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Dark overlay to make text pop against the background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .header { margin-bottom: 25px; }
+    .tesla-taxi { font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+    
+    .logo {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+      background: url('IMG_2340.png') no-repeat center center;
+      background-size: contain;
+    }
+
+    .tesla-goapp { color: #2ecc71; font-size: 1.8rem; font-weight: bold; }
+    .aleksandar { color: #2ecc71; font-size: 1.3rem; font-weight: bold; margin-top: 5px; }
+
+    .status {
+      font-size: 22px;
+      font-weight: bold;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .available { background-color: #2ecc71; }
+    .not-available { background-color: #e74c3c; }
+
+    .shift {
+      margin-top: 15px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      padding: 15px;
+      border-radius: 10px;
+      line-height: 1.5;
+    }
+
+    .contact { margin-top: 25px; }
+    button {
+      padding: 14px 20px;
+      margin: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      width: 240px;
+    }
+
+    .phone { background: #007bff; color: white; }
+    .whatsapp { background: #25D366; color: white; }
+    .viber { background: #7360F2; color: white; }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="tesla-taxi">Tesla Taxi</div>
+    <div class="logo"></div>
+    <div class="tesla-goapp">TeslaGoApp</div>
+    <div class="aleksandar">ALEKSANDAR</div>
+  </div>
+
+  <div id="status" class="status"></div>
+  <div id="shift-info" class="shift"></div>
+
+  <div class="contact">
+    <button class="phone" onclick="window.location.href='tel:+38268048865'">📞 Call / Pozovi</button><br>
+    <button class="whatsapp" onclick="window.location.href='https://wa.me/38268048865'">WhatsApp</button>
+    <!-- Fixed Viber link -->
+    <button class="viber" onclick="window.location.href='viber://contact?number=%2B38268048865'">Viber</button>
+  </div>
+</div>
+
+<script>
+function getWeekType() {
+  const now = new Date();
+  const referenceDate = new Date(2026, 4, 4); 
+  const diffDays = Math.floor((now - referenceDate) / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < 0) return "afternoon";
+
+  const weekNumber = Math.floor(diffDays / 7);
+  return weekNumber % 2 === 0 ? "morning" : "afternoon";
+}
+
+function isAvailable() {
+  const now = new Date();
+  const day = now.getDay(); 
+
+  if (day === 1) return false;
+
+  const weekType = getWeekType();
+  const hours = now.getHours();
+
+  if (weekType === "morning") {
+    return hours >= 7 && hours < 15;
+  } else {
+    return hours >= 15 && hours < 23;
+  }
+}
+
+const statusDiv = document.getElementById('status');
+const shiftDiv = document.getElementById('shift-info');
+const weekType = getWeekType();
+
+if (isAvailable()) {
+  statusDiv.className = "status available";
+  statusDiv.innerHTML = "✅ AVAILABLE NOW<br>✅ DOSTUPAN";
+} else {
+  statusDiv.className = "status not-available";
+  statusDiv.innerHTML = "❌ NOT AVAILABLE<br>❌ NEDOSTUPAN";
+}
+
+const shiftNameEN = weekType === "morning" ? "Morning Shift" : "Afternoon Shift";
+const shiftNameSRB = weekType === "morning" ? "Prva Smjena" : "Druga Smjena";
+const timeRange = weekType === "morning" ? "07:00 – 15:00" : "15:00 – 23:00";
+
+shiftDiv.innerHTML = `
+  <strong>${shiftNameEN} / ${shiftNameSRB}</strong><br>
+  Mon / Pon: OFF<br>
+  Tue–Sun / Uto–Ned: ${timeRange}
+`;
+</script>
+
+</body>
+</html>
